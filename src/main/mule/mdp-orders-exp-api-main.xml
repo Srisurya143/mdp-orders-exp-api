@@ -29,6 +29,10 @@ import * from dw::util::Timer
 output application/json
 ---
 currentMilliseconds()]]></ee:set-variable>
+				<ee:set-variable variableName="resourcePath" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.requestPath]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="common-process-start-logging-subflow" doc:id="711b7ad3-d970-4a25-9148-447f384d88d6" name="common-process-start-logging-subflow"/>

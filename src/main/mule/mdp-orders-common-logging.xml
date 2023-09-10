@@ -9,14 +9,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:transform doc:name="processStartTransformMessage" doc:id="0e3e35e2-1289-4927-ad7c-55be01f0523b" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+output application/json skipNullOn='everywhere'
 ---
 {
+	"flowName": vars.loggingVars.flowName,
 	"apiName": vars.loggingVars.appName,
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
-	"processStartTime": vars.apiKickOffTime	as String ++ "ms"
+	"processStartTime": vars.apiKickOffTime	as String ++ "ms",
+	"rsourcePath": vars.resourcePath,
+	"step": Mule::p('step.processStart')
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -32,10 +35,13 @@ import * from dw::util::Timer
 output application/json
 ---
 {
+	"flowName": vars.loggingVars.flowName default "",
 	"apiName": vars.loggingVars.appName,
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
+	"step": Mule::p('step.processEnd'),
+	"code": if(!isEmpty(attributes.statusCode)) attributes.statusCode else "NA",
 	"processEndTime": (currentMilliseconds() - vars.apiKickOffTime) as String ++ "ms"
 }]]></ee:set-payload>
 				</ee:message>
@@ -52,11 +58,13 @@ import * from dw::util::Timer
 output application/json
 ---
 {
+	"flowName": vars.loggingVars.flowName deafult "",
 	"apiName": vars.loggingVars.appName,
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
-	"processEndTime": (currentMilliseconds() - vars.apiKickOffTime) as String ++ "ms"
+	"step": Mule::p('step.flowStart')
+	
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -69,14 +77,15 @@ output application/json
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 import * from dw::util::Timer
-output application/json
+output application/json skipNullOn='everywhere'
 ---
 {
 	"apiName": vars.loggingVars.appName,
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
-	"processEndTime": (currentMilliseconds() - vars.apiKickOffTime) as String ++ "ms"
+	"flowName": vars.loggingVars.flowName default "",
+	"step": Mule::p('step.flowEnd')
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -96,7 +105,9 @@ output application/json
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
-	"processEndTime": (currentMilliseconds() - vars.apiKickOffTime) as String ++ "ms"
+	"flowName": vars.loggingVars.flowName default "",
+	"step": Mule::p('step.beforeRequest'),
+	"requestPayload": payload
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -116,7 +127,8 @@ output application/json
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
 	"correlationId": vars.loggingVars.correlationId,
-	"processEndTime": (currentMilliseconds() - vars.apiKickOffTime) as String ++ "ms"
+	"step": Mule::p('step.afterRequest'),
+	"requestPayload": payload
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
