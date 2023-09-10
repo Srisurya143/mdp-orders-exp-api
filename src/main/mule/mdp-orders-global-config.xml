@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+ <http:listener-config name="mdp-orders-exp-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="mdp-orders-exp-api-config" api="resource::5a149ba4-8c03-420f-a296-d088003db09f:mdp-orders-exp-api:1.0.0:raml:zip:mdp-orders-exp-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<http:request-config name="Orders_PRC_Request" doc:name="HTTP Request configuration" doc:id="c9f2b6d3-95c5-41e0-bda8-95ccf3d892fc" basePath="${mdpOrdersPrcApi.baseUrl}">
+		<http:request-connection host="${mdpOrdersPrcApi.host}" port="${mdpOrdersPrcApi.port}" >
+			<reconnection >
+				<reconnect frequency="${httpRetry.frequency}" count="${httpRetry.attempts}" />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="d47ece51-a1c8-47b5-b1c8-1432e6f19013" file="properties/common.yaml" />
+	<global-property doc:name="Global Property" doc:id="07bc59e0-9635-4e1e-af3b-659876214b90" name="mule.env" value="local" />
+	<configuration-properties doc:name="Configuration properties" doc:id="80067335-f9d7-41fa-b292-5d1082e77c60" file="properties/config-${mule.env}.yaml" />	
+</mule>

@@ -1,0 +1,16 @@
+api:
+  Name: "mdp-orders-exp-api"
+  Version: "1.0.0"
+  
+flowName:
+  "mainFlow": "mdp-orders-exp-api-main"
+  "postOrdersSubflow": "mdp-orders-post-subflow"
+  "patchOrdersSubflow": "mdp-orders-patch-subflow"
+  "getOrdersSubflow": "mdp-orders-get-subflow"
+  "pingSubflow": "mdp-orders-ping-subflow"
+  "healthCheckSubflow": "mdp-orders-healthcheck-subflow"
+  "getOrdersByIdSubflow": "mdp-orders-getid-subflow"
+  
+httpRetry:
+  frequency: "2000"
+  attempts: "3"

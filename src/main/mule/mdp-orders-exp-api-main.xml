@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="mdp-orders-exp-api-main">
+        <http:listener config-ref="mdp-orders-exp-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <ee:transform doc:name="initVariables" doc:id="4b600bc0-a263-487a-adac-3c35717296c6" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="loggingVars" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"appName": Mule::p('api.Name'),
+	"appVersion": Mule::p('api.Version'),
+	"timeStamp": now(),
+	"correlationId": attributes.headers.correlationId default correlationId,
+	"flowName": Mule::p('flowName.mainFlow')	
+}]]></ee:set-variable>
+				<ee:set-variable variableName="apiKickOffTime" ><![CDATA[%dw 2.0
+import * from dw::util::Timer
+output application/json
+---
+currentMilliseconds()]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="common-process-start-logging-subflow" doc:id="711b7ad3-d970-4a25-9148-447f384d88d6" name="common-process-start-logging-subflow"/>
+		<apikit:router config-ref="mdp-orders-exp-api-config" />
+		<flow-ref doc:name="common-process-end-logging-subflow" doc:id="2c6b5801-ec94-4a55-80f6-58bc0f4689f8" name="common-process-end-logging-subflow"/>
+    </flow>
+    <flow name="mdp-orders-exp-api-console">
+        <http:listener config-ref="mdp-orders-exp-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="mdp-orders-exp-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="patch:\orders:application\json:mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-patch-subflow" doc:id="dfae351a-02d0-4faa-b03d-0adf7b340daa" name="mdp-orders-patch-subflow"/>
+    </flow>
+    <flow name="get:\healthcheck:mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-healthcheck-subflow" doc:id="70fadad3-5bf3-4d2d-a0f2-1ccdc80cce9b" name="mdp-orders-healthcheck-subflow"/>
+    </flow>
+    <flow name="get:\orders:mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-get-subflow" doc:id="5d1d8606-d262-437b-8351-1daddf1ca0f0" name="mdp-orders-get-subflow"/>
+    </flow>
+    <flow name="get:\ping:mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-ping-subflow" doc:id="e74e6a8c-9f0c-4457-8298-d357cb449477" name="mdp-orders-ping-subflow"/>
+    </flow>
+    <flow name="get:\orders\(order_id):mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-getid-subflow" doc:id="18105bc9-7325-400d-967f-93f09ddea72f" name="mdp-orders-getid-subflow"/>
+    </flow>
+    <flow name="post:\orders:application\json:mdp-orders-exp-api-config">
+		<flow-ref doc:name="mdp-orders-post-subflow" doc:id="444acb79-febf-4845-819a-b754950e1e6f" name="mdp-orders-post-subflow"/>
+    </flow>
+</mule>
