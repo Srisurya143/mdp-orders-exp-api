@@ -1,6 +1,7 @@
 api:
   Name: "mdp-orders-exp-api"
   Version: "1.0.0"
+  status: "Running"
   
 flowName:
   "mainFlow": "mdp-orders-exp-api-main"

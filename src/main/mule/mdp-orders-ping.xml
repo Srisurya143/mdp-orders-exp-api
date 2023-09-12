@@ -21,15 +21,7 @@ vars.loggingVars update {
 		<flow-ref doc:name="common-flow-start-logging-subflow" doc:id="d80567fe-6334-4fc9-b916-8bc207a6de16" name="common-flow-start-logging-subflow"/>
 		<ee:transform doc:name="pingResponse" doc:id="54402705-7c7e-46a8-894f-3fdd9ff5f1ec" >
 			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-  "apiName": "orders-exp-api",
-  "status": "Running",
-  "apiVersion": "1.0.0",
-  "correlationId": "akjsdfhksdfb"
-}]]></ee:set-payload>
+				<ee:set-payload resource="dwl/pingResponse.dwl" />
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="common-flow-end-logging-subflow" doc:id="e1a9731f-5c73-4c76-a199-3162c8e8defc" name="common-flow-end-logging-subflow"/>

@@ -14,16 +14,6 @@
 			<ee:message >
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="loggingVars" ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"appName": Mule::p('api.Name'),
-	"appVersion": Mule::p('api.Version'),
-	"timeStamp": now(),
-	"correlationId": attributes.headers.correlationId default correlationId,
-	"flowName": Mule::p('flowName.mainFlow')	
-}]]></ee:set-variable>
 				<ee:set-variable variableName="apiKickOffTime" ><![CDATA[%dw 2.0
 import * from dw::util::Timer
 output application/json
@@ -33,6 +23,7 @@ currentMilliseconds()]]></ee:set-variable>
 output application/json
 ---
 attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable resource="dwl/loggingVars.dwl" variableName="loggingVars" />
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="common-process-start-logging-subflow" doc:id="711b7ad3-d970-4a25-9148-447f384d88d6" name="common-process-start-logging-subflow"/>
