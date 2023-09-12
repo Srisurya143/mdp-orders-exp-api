@@ -87,6 +87,15 @@ else
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
+			<flow-ref doc:name="common-error-logging-subflow" doc:id="5106c907-d488-4286-bbca-dc962cd52da0" name="common-error-logging-subflow"/>
 		</on-error-propagate>
 </error-handler>
+	<sub-flow name="common-error-logging-subflow" doc:id="0015e368-a5ac-4b52-b96a-f1a50d6bad5c" >
+		<ee:transform doc:name="errorMessageTransformMessage" doc:id="a9481373-7e89-4ee6-a21a-f89211f178c7" >
+			<ee:message >
+				<ee:set-payload resource="dwl/errorMessageLogging.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="ERROR" doc:name="Logger" doc:id="74a00562-678d-47bc-8c5b-9b39a4904459" message="#[payload]"/>
+	</sub-flow>
 </mule>

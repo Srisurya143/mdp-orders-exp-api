@@ -23,3 +23,7 @@ step:
   flowEnd: "Flow End"
   beforeRequest: "Before Request"
   afterRequest: "After Request"
+  
+errorLogger:
+  transactionlevel: "Error"
+  status: "Error"
