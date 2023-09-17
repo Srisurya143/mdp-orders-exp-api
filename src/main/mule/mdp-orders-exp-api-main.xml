@@ -10,25 +10,24 @@
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <ee:transform doc:name="initVariables" doc:id="4b600bc0-a263-487a-adac-3c35717296c6" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="apiKickOffTime" ><![CDATA[%dw 2.0
+        <ee:transform doc:name="initVariables" doc:id="4b600bc0-a263-487a-adac-3c35717296c6">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="apiKickOffTime"><![CDATA[%dw 2.0
 import * from dw::util::Timer
 output application/json
 ---
 currentMilliseconds()]]></ee:set-variable>
-				<ee:set-variable variableName="resourcePath" ><![CDATA[%dw 2.0
+                <ee:set-variable variableName="resourcePath"><![CDATA[%dw 2.0
 output application/json
 ---
 attributes.requestPath]]></ee:set-variable>
-				<ee:set-variable resource="dwl/loggingVars.dwl" variableName="loggingVars" />
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="common-process-start-logging-subflow" doc:id="711b7ad3-d970-4a25-9148-447f384d88d6" name="common-process-start-logging-subflow"/>
-		<apikit:router config-ref="mdp-orders-exp-api-config" />
-		<flow-ref doc:name="common-process-end-logging-subflow" doc:id="2c6b5801-ec94-4a55-80f6-58bc0f4689f8" name="common-process-end-logging-subflow"/>
+                <ee:set-variable resource="dwl/loggingVars.dwl" variableName="loggingVars" />
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="common-process-start-logging-subflow" doc:id="711b7ad3-d970-4a25-9148-447f384d88d6" name="common-process-start-logging-subflow" />
+        <apikit:router config-ref="mdp-orders-exp-api-config" />
+        <flow-ref doc:name="common-process-end-logging-subflow" doc:id="2c6b5801-ec94-4a55-80f6-58bc0f4689f8" name="common-process-end-logging-subflow" />
     </flow>
     <flow name="mdp-orders-exp-api-console">
         <http:listener config-ref="mdp-orders-exp-api-httpListenerConfig" path="/console/*">
@@ -58,21 +57,21 @@ output application/json
         </error-handler>
     </flow>
     <flow name="patch:\orders:application\json:mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-patch-subflow" doc:id="dfae351a-02d0-4faa-b03d-0adf7b340daa" name="mdp-orders-patch-subflow"/>
+        <flow-ref doc:name="mdp-orders-patch-subflow" doc:id="dfae351a-02d0-4faa-b03d-0adf7b340daa" name="mdp-orders-patch-subflow" />
     </flow>
     <flow name="get:\healthcheck:mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-healthcheck-subflow" doc:id="70fadad3-5bf3-4d2d-a0f2-1ccdc80cce9b" name="mdp-orders-healthcheck-subflow"/>
+        <flow-ref doc:name="mdp-orders-healthcheck-subflow" doc:id="70fadad3-5bf3-4d2d-a0f2-1ccdc80cce9b" name="mdp-orders-healthcheck-subflow" />
     </flow>
     <flow name="get:\orders:mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-get-subflow" doc:id="5d1d8606-d262-437b-8351-1daddf1ca0f0" name="mdp-orders-get-subflow"/>
+        <flow-ref doc:name="mdp-orders-get-subflow" doc:id="5d1d8606-d262-437b-8351-1daddf1ca0f0" name="mdp-orders-get-subflow" />
     </flow>
     <flow name="get:\ping:mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-ping-subflow" doc:id="e74e6a8c-9f0c-4457-8298-d357cb449477" name="mdp-orders-ping-subflow"/>
+        <flow-ref doc:name="mdp-orders-ping-subflow" doc:id="e74e6a8c-9f0c-4457-8298-d357cb449477" name="mdp-orders-ping-subflow" />
     </flow>
     <flow name="get:\orders\(order_id):mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-getid-subflow" doc:id="18105bc9-7325-400d-967f-93f09ddea72f" name="mdp-orders-getid-subflow"/>
+        <flow-ref doc:name="mdp-orders-getid-subflow" doc:id="18105bc9-7325-400d-967f-93f09ddea72f" name="mdp-orders-getid-subflow" />
     </flow>
     <flow name="post:\orders:application\json:mdp-orders-exp-api-config">
-		<flow-ref doc:name="mdp-orders-post-subflow" doc:id="444acb79-febf-4845-819a-b754950e1e6f" name="mdp-orders-post-subflow"/>
+        <flow-ref doc:name="mdp-orders-post-subflow" doc:id="444acb79-febf-4845-819a-b754950e1e6f" name="mdp-orders-post-subflow" />
     </flow>
 </mule>

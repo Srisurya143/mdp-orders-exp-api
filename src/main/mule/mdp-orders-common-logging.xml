@@ -58,7 +58,7 @@ import * from dw::util::Timer
 output application/json
 ---
 {
-	"flowName": vars.loggingVars.flowName deafult "",
+	"flowName": vars.loggingVars.flowName default "",
 	"apiName": vars.loggingVars.appName,
 	"appVersion": vars.loggingVars.appVersion,
 	"timeStamp": now(),
